@@ -5,8 +5,6 @@
 .metadata/
 
 #Debug
-Debug/
-debug/
 Release/
 release
 
@@ -14,6 +12,7 @@ release
 *.d
 
 # Object files
+obj/
 *.o
 *.ko
 *.obj
