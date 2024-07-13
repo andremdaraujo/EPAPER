@@ -16,6 +16,28 @@ void APP_Init(void)
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
 
+    // /Shutdown - C0
+    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_0;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IPD;
+
+    GPIO_Init(GPIOC, &GPIO_InitStructure); // Shuts down the board right after reset
+
+    Delay_Ms(200);                          // User must hold ON button for this time...
+
+    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_0;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+    GPIO_SetBits(GPIOC, GPIO_Pin_0);        // ...The the MCU keeps the power circuit on
+
+    // User Button - C3
+    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IPU;
+
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+
     // LED Pin - C4
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_4;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
@@ -23,11 +45,11 @@ void APP_Init(void)
 
     GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-    GPIO_SetBits(GPIOC, GPIO_Pin_4);
-    Delay_Ms(100);
+    GPIO_SetBits(GPIOC, GPIO_Pin_0);
 
+    GPIO_SetBits(GPIOC, GPIO_Pin_4);        // LED D1 blinks to indicate the board is properly turned on
+    Delay_Ms(500);
     GPIO_ResetBits(GPIOC, GPIO_Pin_4);
-    Delay_Ms(100);
 
     printf("EPD IO Initialization... \n");
     epd_io_init();
@@ -49,7 +71,7 @@ void APP_Init(void)
     epd_displayBW(image_bw);
     epd_enter_deepsleepmode(EPD_DEEPSLEEP_MODE1);
 
-    Delay_Ms(5000);
+    Delay_Ms(2000);
 
     epd_init_partial();
 
@@ -75,10 +97,15 @@ void APP_Run(void)
 {
     while (1)
     {
-        GPIO_SetBits(GPIOC, GPIO_Pin_4);
-        Delay_Ms(100);
-
-        GPIO_ResetBits(GPIOC, GPIO_Pin_4);
-        Delay_Ms(100);
+        if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_3))
+        {
+            GPIO_ResetBits(GPIOC, GPIO_Pin_4);
+            Delay_Ms(100);
+        }
+        else
+        {
+            GPIO_SetBits(GPIOC, GPIO_Pin_4);
+            Delay_Ms(100);
+        }
     }
 }
