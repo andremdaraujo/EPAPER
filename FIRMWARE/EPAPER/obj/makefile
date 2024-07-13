@@ -53,7 +53,7 @@ all: EPAPER.elf secondary-outputs
 
 # Tool invocations
 EPAPER.elf: $(OBJS) $(USER_OBJS)
-	@	@	riscv-none-embed-gcc -march=rv32ecxw -mabi=ilp32e -msmall-data-limit=0 -msave-restore -Os -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -Wunused -Wuninitialized  -g -T "C:\Andre\PROJECTS\CH32V\EPAPER\FIRMWARE\EPAPER\Ld\Link.ld" -nostartfiles -Xlinker --gc-sections -Wl,-Map,"EPAPER.map" --specs=nano.specs --specs=nosys.specs -o "EPAPER.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lprintf
+	@	@	riscv-none-embed-gcc -march=rv32ecxw -mabi=ilp32e -msmall-data-limit=0 -msave-restore -Os -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -Wunused -Wuninitialized  -g -T "C:\ANDREARAUJO\LOCAL DEV\WCH\EPAPER\FIRMWARE\EPAPER\Ld\Link.ld" -nostartfiles -Xlinker --gc-sections -Wl,-Map,"EPAPER.map" --specs=nano.specs --specs=nosys.specs -o "EPAPER.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lprintf
 	@	@
 EPAPER.hex: EPAPER.elf
 	@	riscv-none-embed-objcopy -O ihex "EPAPER.elf"  "EPAPER.hex"
